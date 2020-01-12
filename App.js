@@ -19,7 +19,9 @@ import Subject from './src/screens/Subject';
 import Chapters from './src/screens/Chapters';
 import Topics from './src/screens/Topics';
 import Content from './src/screens/Content';
-import Camera from './src/screens/Camera';
+import Camera_1 from './src/screens/Camera_1';
+import Camera_2 from './src/screens/Camera_2';
+
 import Examples from './src/screens/Examples';
 
 const AppNavigator = createStackNavigator(
@@ -33,7 +35,8 @@ const AppNavigator = createStackNavigator(
     Chapters,
     Topics,
     Content,
-    Camera,
+    Camera_1,
+    Camera_2,
     Examples
   },
   {

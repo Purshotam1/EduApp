@@ -5,6 +5,7 @@ import firebase from 'react-native-firebase';
 import { HeaderRight } from '../components/Header'
 import jsrecommender from 'js-recommender';
 import { db } from '../config'
+import YouTube from 'react-native-youtube';
 
 export default class Content extends Component {
     _isMounted = false;
@@ -18,7 +19,11 @@ export default class Content extends Component {
         isLoading: false,
         currentUser: null,
         content: null,
-        subjects: null
+        subjects: null,
+        isReady: false,
+        status: '',
+        error: '',
+        quality: ''
     };
 
     static navigationOptions = ({ navigation }) => {
@@ -101,7 +106,7 @@ export default class Content extends Component {
 
                     examples_keys.map((ek, ei) => {
                         const ratings = examples[ek]['Rating'];
-                        const ratings_keys = Object.keys(ratings);
+                        const ratings_keys = (ratings) ? (Object.keys(ratings)): ([]);
                         console.log(ratings);
                         ratings_keys.map((rk, ri) => {
 
@@ -151,12 +156,42 @@ export default class Content extends Component {
         return (
             (content) ? (
                 <View style={styles.container}>
+                    {
+                        (content['Video_id']) ? (
+                            <YouTube
+                        apiKey="AIzaSyCnbx0r9s4O4x3f4q3-SdoqvrpzXJuTA8k"
+                        videoId={content['Video_id']} // The YouTube video ID
+                        play={false} // control playback of video with true/false
+                        onReady={e => this.setState({ isReady: true })}
+                        onChangeState={e => this.setState({ status: e.state })}
+                        onChangeQuality={e => this.setState({ quality: e.quality })}
+                        onError={e => this.setState({ error: e.error })}
+                        style={{ alignSelf: 'stretch', height: 300 }}
+                        />
+                        ) : (null)
+                    }
                 <Text>{content['Description']}</Text>
                 <Button 
                     title="Examples" 
                     onPress={this.getExamples} 
                     raised
                     containerStyle={styles.buttonContainer}/>
+
+                {
+                    (this.props.navigation.getParam('topic', null) == 'Skull Anatomy') ? (
+                        <Button
+                    containerStyle={{width: 100, alignSelf: 'center', marginTop: 10}}
+                    title="AR"
+                    onPress={() => this.props.navigation.navigate('Camera_2')}
+                />
+                    ) : (
+                        <Button
+                    containerStyle={{width: 100, alignSelf: 'center', marginTop: 10}}
+                    title="AR"
+                    onPress={() => this.props.navigation.navigate('Camera_1')}
+                />
+                    )
+                }
             </View>
             ) : (null)
         );

@@ -121,12 +121,6 @@ export default class Main extends Component {
                         title="Get Subjects" onPress={this.getSubjects} 
                     />
                 </View>
-
-                <Button
-                    title="Camera"
-                    onPress={() => this.props.navigation.navigate('Camera')}
-                />
-                
             </View>
         );
     }

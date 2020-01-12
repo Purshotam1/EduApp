@@ -49,12 +49,16 @@ export default class Examples extends Component {
                     keys.push(items[i][0]);
                 }
                 console.log(keys);
-                this.setState({
-                    isLoading: false, 
-                    currentUser: user,
-                    examples:  this.props.navigation.getParam('examples', null),
-                    examples_key: keys
-                });
+                const ref = this.props.navigation.getParam('ref', null);
+
+                db.ref(ref+"/Examples").once('value', (data) => {
+                    this.setState({
+                        isLoading: false, 
+                        currentUser: user,
+                        examples:  data.val(),
+                        examples_key: keys
+                    });
+                })
                 this.props.navigation.setParams({currentUser: user});
                 console.log(this.props.navigation);
             } else {
@@ -86,8 +90,8 @@ export default class Examples extends Component {
     }
 
     render() {
-        const { examples, examples_key, isLoading } = this.state;
-        console.log(examples_key);
+        const { examples, examples_key, isLoading, currentUser } = this.state;
+        console.log(examples);
         if (isLoading) {
             return (<ActivityIndicator style={{marginTop: 'auto', marginBottom: 'auto'}} size='large' />);
         }
@@ -103,7 +107,10 @@ export default class Examples extends Component {
                                     <Text>{examples[k]['Content']}</Text>
                                     <Rating
                                         fractions={1}
-                                        startingValue={0}
+                                        startingValue={
+                                            (examples[k]['Rating'] && examples[k]['Rating'][currentUser.uid]) ? 
+                                            (examples[k]['Rating'][currentUser.uid]) : (0)
+                                        }
                                         showRating
                                         onFinishRating={this.ratingCompleted}
                                         style={{ paddingVertical: 10 }}

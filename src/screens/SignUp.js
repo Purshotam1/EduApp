@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, StyleSheet, ActivityIndicator, Picker, ScrollView } from 'react-native';
+import { View, PermissionsAndroid, Text, TextInput, StyleSheet, ActivityIndicator, Picker, ScrollView } from 'react-native';
 import { Button } from 'react-native-elements';
 import firebase from 'react-native-firebase';
 import {db} from '../config';
 import validator from 'validator';
+// import Geolocation from 'react-native-geolocation-service';
+// import Geocoder from 'react-native-geocoding';
+
+// Geocoder.init("AIzaSyCnbx0r9s4O4x3f4q3-SdoqvrpzXJuTA8k", {language : "en"});
+
 export default class SignUp extends Component {
 
     state = {
@@ -12,8 +17,8 @@ export default class SignUp extends Component {
         email: '',
         password: '',
         errorMessage: '',
-        region: '',
-        interest: ''
+        interest: '',
+        granted: false
     };
 
     componentDidMount() {
@@ -23,7 +28,48 @@ export default class SignUp extends Component {
             password: '',
             errorMessage: ''
         })
+        // this.requestCameraPermission();
+        // Geolocation.getCurrentPosition(
+        //     (position) => {
+        //         Geocoder.from(position['coords']['latitude'], position['coords']['longitude'])
+        //         .then(json => {
+        //         var addressComponent = json.results[0].address_components[0];
+        //             console.log(addressComponent);
+        //         })
+        //         .catch(error => console.warn(error));
+        //     },
+        //     (error) => {
+        //         // See error code charts below.
+        //         console.log(error.code, error.message);
+        //     },
+        //     { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+        // );
     }
+
+    // requestCameraPermission = async () => {
+    //     try {
+    //       const granted = await PermissionsAndroid.request(
+    //         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    //         {
+    //           title: 'Cool Photo App Camera Permission',
+    //           message:
+    //             'Cool Photo App needs access to your camera ' +
+    //             'so you can take awesome pictures.',
+    //           buttonNeutral: 'Ask Me Later',
+    //           buttonNegative: 'Cancel',
+    //           buttonPositive: 'OK',
+    //         },
+    //       );
+    //       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+    //         console.log('You can use the camera');
+    //         this.setState({granted: true})
+    //       } else {
+    //         console.log('Camera permission denied');
+    //       }
+    //     } catch (err) {
+    //       console.warn(err);
+    //     }
+    // }
 
     onChangeName = e => {
         this.setState({
@@ -77,14 +123,26 @@ export default class SignUp extends Component {
         var userId = firebase.auth().currentUser.uid;
         const { 
             name,
-            region, 
-            interest
+            interest,
+            granted
         } = this.state;
+
+        // if (granted) {
+        //     Geolocation.getCurrentPosition(
+        //         (position) => {
+        //             console.log(position);
+        //         },
+        //         (error) => {
+        //             // See error code charts below.
+        //             console.log(error.code, error.message);
+        //         },
+        //         { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+        //     );
+        // }
 
         var userProfile = {
           created: d,
           name,
-          region, 
           interest
         };
         console.log(userProfile);
@@ -99,7 +157,6 @@ export default class SignUp extends Component {
             name,
             email,
             password, 
-            region, 
             interest
         } = this.state;
 
@@ -136,20 +193,6 @@ export default class SignUp extends Component {
                     onChange = {this.onChangePassword}
                     value = {password}
                 />
-
-                <Picker
-                    selectedValue={region}
-                    style={styles.picker}
-                    onValueChange={(itemValue, itemIndex) =>
-                        this.setState({region: itemValue})
-                    }
-                >
-                    <Picker.Item label="Select Region" value="0" />
-                    <Picker.Item label="A" value="A" />
-                    <Picker.Item label="B" value="B" />
-                    <Picker.Item label="C" value="C" />
-                    <Picker.Item label="D" value="D" />
-                </Picker>
 
                 <Picker
                     selectedValue={interest}
